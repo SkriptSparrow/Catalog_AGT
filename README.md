@@ -61,19 +61,6 @@ Flask will run the project on http://127.0.0.1:5000/
 🔐 Admin Access
 To log in as an admin, enter the master password defined in your .env file.
 
-📁 Project Structure
-php
-Copy
-Edit
-Catalog_AGT/
-│
-├── static/               # Static assets (CSS, JS, images)
-│   └── screenshots/      # Screenshots for README
-├── templates/            # Jinja2 templates
-├── main.py               # Flask app entry point
-├── requirements.txt      # Python dependencies
-└── .gitignore            # Git ignore rules
-
 
 👤 Author
 SkriptSparrow

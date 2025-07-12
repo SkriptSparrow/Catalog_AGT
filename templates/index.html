@@ -1,0 +1,530 @@
+
+{% extends 'base.html' %}
+
+{% block title %}
+<title>Агротек Главная</title>
+{% endblock %}
+
+{% block body %}
+
+		<!-- Header Area -->
+		<header class="header">
+			<!-- Header Inner -->
+			<div class="header-inner">
+				<div class="container">
+					<div class="inner">
+						<div class="row">
+							<div class="col-lg-3 col-md-3 col-12">
+								<!-- Start Logo -->
+								<div class="logo">
+									<a href="/home"><img src="static/img/logo-header.png" alt="#"></a>
+								</div>
+								<!-- End Logo -->
+								<!-- Mobile Nav -->
+								<div class="mobile-nav"></div>
+								<!-- End Mobile Nav -->
+							</div>
+							<div class="col-lg-7 col-md-9 col-12">
+								<!-- Main Menu -->
+								<div class="main-menu">
+									<nav class="navigation">
+										<ul class="nav menu">
+											<li class="active"><a href="/">Главная </a></li>
+											<li><a href="/catalog">Каталог </a></li>
+											<li><a href="/blog">Блог </a></li>
+											<li><a href="/about">О нас</a></li>
+											<li><a href="/contacts">Контакты </a></li>
+											<li class="mobile-only">
+												<a href="/apply" class="btn btn-mobile">Сделать заявку</a>
+							    			</li>
+										</ul>
+									</nav>
+								</div>
+								<!--/ End Main Menu -->
+							</div>
+							<div class="col-lg-2 col-12">
+								<div class="get-quote">
+									<a href="/apply" class="btn">Сделать заявку</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--/ End Header Inner -->
+		</header>
+		<!-- End Header Area -->
+
+		<!-- Slider Area -->
+		<section class="slider">
+			<div class="hero-slider">
+				<!-- Start Single Slider -->
+				<div class="single-slider" style="background-image:url('static/img/slider2.jpg')">
+					<div class="container">
+						<div class="row">
+							<div class="col-lg-7">
+								<div class="text">
+									<h1>Нашим фильтрам доверяют по всей стране!</h1>
+									<p>10 лет назад мы на старом Ланосе лично проехали страну от Краснодара до
+										Красноярска. Приобрели много друзей и знакомых, с которыми работаем до
+										сих пор. Многие из наших фильтров прошли многолетний естественный отбор
+										при эксплуатации в машинах этих людей. <br>(PS: Ланосу в тот раз непоздоровилось)</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- End Single Slider -->
+				<!-- Start Single Slider -->
+				<div class="single-slider" style="background-image:url('static/img/slider.jpg')">
+					<div class="container">
+						<div class="row">
+							<div class="col-lg-7">
+								<div class="text">
+									<h1>Надёжная фильтрация для больших расстояний!</h1>
+									<p>Мы не просто продаём нашим клиентам товар. Как предприниматели и простые
+										пацаны мы общаемся и дружим, охотно принимая обратную связь по продукции.
+										На нашем складе остаётся только то, что пользуется доверием наших товарищей.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Start End Slider -->
+				<!-- Start Single Slider -->
+				<div class="single-slider" style="background-image:url('static/img/slider3.png')">
+					<div class="container">
+						<div class="row">
+							<div class="col-lg-7">
+								<div class="text">
+									<h1>Фильтры, проверенные тяжёлой работой!</h1>
+									<p>Наш ассортимент состоит только из тех позиций, что хорошо показали себя в
+										условиях Российских перепитий, при этом не отягощая карманы наших клиентов
+										излишними наценками за именитые бренды.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- End Single Slider -->
+			</div>
+		</section>
+		<!--/ End Slider Area -->
+
+		<!-- Start Schedule Area -->
+		<section class="schedule">
+			<div class="container">
+				<div class="schedule-inner">
+					<div class="schedule-row">
+						<div class="col-lg-4 col-md-6 col-12 ">
+							<!-- single-schedule -->
+							<div class="single-schedule first">
+								<div class="inner">
+									<div class="icon">
+										<i class="icofont-vehicle-trucktor"></i>
+									</div>
+									<div class="single-content">
+										<span>Наши фильтры</span>
+										<h4>Для сельхоз.техники</h4>
+										<p>Многослойные фильтрующие элементы с повышенной грязеёмкостью.</p>
+										<a href="{{ url_for('catalog', type='Сельхоз') }}">
+											Перейти в каталог <i class="fa fa-long-arrow-right"></i>
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-4 col-md-6 col-12">
+							<!-- single-schedule -->
+							<div class="single-schedule middle">
+								<div class="inner">
+									<div class="icon">
+										<i class="icofont-vehicle-crane"></i>
+									</div>
+									<div class="single-content">
+										<span>Наши фильтры</span>
+										<h4>Для спец.техники</h4>
+										<p>Конструкция выдерживает экстремальные нагрузки и перепады температур.</p>
+										<a href="{{ url_for('catalog', type='Спец.техника') }}">
+											Перейти в каталог <i class="fa fa-long-arrow-right"></i>
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-4 col-md-12 col-12">
+							<!-- single-schedule -->
+							<div class="single-schedule last">
+								<div class="inner">
+									<div class="icon">
+										<i class="icofont-truck"></i>
+									</div>
+									<div class="single-content">
+										<span>Наши фильтры</span>
+										<h4>Для грузовых авто</h4>
+										<p>Европейское качество и многослойные фильтрующие материалы.</p>
+										<a href="{{ url_for('catalog', type='Грузовики') }}">
+											Перейти в каталог <i class="fa fa-long-arrow-right"></i>
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<!--/End Start schedule Area -->
+
+		<!-- Start Feautes -->
+		 <section class="Feautes section">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-4 col-12">
+						<!-- Start Single features -->
+						<div class="single-features">
+							<div class="signle-icon">
+								<i class="icofont icofont-vehicle-delivery-van"></i>
+							</div>
+							<h3>Развитая логистика доставки</h3>
+							<p>Отгружаем в СДЕК, КИТ, Деловые, и другие ТК. Пакуем и проверяем
+								самостоятельно, с любовью и трепетом. Также по Югу возим сами
+								на своих машинах.</p>
+						</div>
+						<!-- End Single features -->
+					</div>
+					<div class="col-lg-4 col-12">
+						<!-- Start Single features -->
+						<div class="single-features">
+							<div class="signle-icon">
+								<i class="icofont icofont-user-alt-3"></i>
+							</div>
+							<h3>Клиентский сервис</h3>
+							<p>Мы уже 10 лет на рынке и дорожим своей репутацией. Поэтому
+								максимально ориентированы на удобство клиентов, со многими
+								из которых знакомы лично.</p>
+						</div>
+						<!-- End Single features -->
+					</div>
+					<div class="col-lg-4 col-12">
+						<!-- Start Single features -->
+						<div class="single-features last">
+							<div class="signle-icon">
+								<i class="icofont icofont-money"></i>
+							</div>
+							<h3>Доступные цены</h3>
+							<p>Мы работаем в нише адекватной маржинальности. Большая часть
+								позиций имеют минимальную наценку. На объёмах охотно торгуемся.</p>
+						</div>
+						<!-- End Single features -->
+					</div>
+				</div>
+			</div>
+		</section>
+		<!-- End Feautes -->
+
+		<!-- Start Fun-facts -->
+		<div id="fun-facts" class="fun-facts section overlay">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-3 col-md-6 col-12">
+						<!-- Start Single Fun -->
+						<div class="single-fun">
+							<i class="icofont icofont-chart-histogram"></i>
+							<div class="content">
+								<span class="counter">127435</span>
+								<p>Продано фильтров</p>
+							</div>
+						</div>
+						<!-- End Single Fun -->
+					</div>
+					<div class="col-lg-3 col-md-6 col-12">
+						<!-- Start Single Fun -->
+						<div class="single-fun">
+							<i class="icofont icofont-clip-board"></i>
+							<div class="content">
+								<span class="counter">927</span>
+								<p>Позиций в ассортимете</p>
+							</div>
+						</div>
+						<!-- End Single Fun -->
+					</div>
+					<div class="col-lg-3 col-md-6 col-12">
+						<!-- Start Single Fun -->
+						<div class="single-fun">
+							<i class="icofont-simple-smile"></i>
+							<div class="content">
+								<span class="counter">74</span>
+								<p>Счастливых клиентов</p>
+							</div>
+						</div>
+						<!-- End Single Fun -->
+					</div>
+					<div class="col-lg-3 col-md-6 col-12">
+						<!-- Start Single Fun -->
+						<div class="single-fun">
+							<i class="icofont icofont-table"></i>
+							<div class="content">
+								<span class="counter">11</span>
+								<p>Лет на рынке</p>
+							</div>
+						</div>
+						<!-- End Single Fun -->
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--/ End Fun-facts -->
+
+		<!-- Pricing Table -->
+		<section class="pricing-table section">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="section-title">
+							<h2>Популярные товары</h2>
+							<p>Весь наш ассортимент вы можете увидеть на странице каталога.</p>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+				  {% for product in main_products %}
+					<div class="col-lg-4 col-md-12 col-12">
+					  <div class="single-table">
+						<!-- Table Head -->
+						<div class="table-head">
+						  <div class="icon">
+							{% if product.photo_filename %}
+							  <img src="{{ url_for('static', filename='uploads/' ~ product.photo_filename) }}"
+								   alt="Product Image"
+								   style="width: 100%; height: 300px; object-fit: cover;">
+							{% else %}
+							  <img src="{{ url_for('static', filename='img/default-product.png') }}"
+								   alt="Нет фото"
+								   style="width: 100%; height: 300px; object-fit: cover;">
+							{% endif %}
+						  </div>
+						  <h4 class="title">
+							{{ product.name }}
+							<span style="font-size: 15px; color: #888;"><br>{{ product.category }} фильтр</span>
+						  </h4><br>
+						  <div class="price">
+							<p class="amount">{{ product.price|int }} &#8381;</p>
+						  </div>
+						</div>
+						<!-- Table List -->
+						<ul class="table-list">
+						  <li>{{ product.complete_set }}</li>
+						  <li>{{ product.full_marking }}</li>
+						  <li>Арт. {{ product.article }}</li>
+						</ul>
+					  </div>
+					</div>
+				  {% endfor %}
+				</div>
+			</div>
+		</section>
+		<!--/ End Pricing Table -->
+
+<!-- Start portfolio -->
+		<section class="portfolio section" >
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="section-title">
+							<h2>Отзывы наших клиентов</h2>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-lg-12 col-12">
+						<div class="owl-carousel portfolio-slider">
+							<div class="single-pf">
+								<img src="static/img/client1.png" alt="#">
+								<p class="review"><b>Володя, частный фермер</b><br>
+								<strong><br>Работаю с парнями с 2016 года, когда они ещё работали в найме в другой конторе торговиками.
+									Такой срок уже говорит о многом. О качестве этих людей и их деятельности. Из самых больших плюсов,
+									что я заметил для себя - это запасливость пацанов. Когда у всех голяк на складах, Костян с Серым
+									всегда имеют загашник где-то в закромах своего ангара. По доставке всегда привозят вовремя,
+									по телефонной договорённости. Качество самой продукции всегда соответствует ценнику.</p></strong>
+							</div>
+							<div class="single-pf">
+								<img src="static/img/client2.png" alt="#">
+								<p class="review"><b>Сергей, индивидуальный предприниматель</b><br>
+								<strong><br>У меня парк в 35 единиц техники. Раньше всегда были заминки с поставщиками, у одного
+									того нет, у другого сего. С Агротеком договорились заказывать определённое количество
+									под себя. Изготавливают и закупают заранее, с отлёжкой у себя на складе. Отгружают мне
+									по договорённости. Решили мою боль как настоящие профи.</p></strong>
+							</div>
+							<div class="single-pf">
+								<img src="static/img/client3.png" alt="#">
+								<p class="review"><b>Илья, индивидуальный предприниматель</b><br>
+								<strong><br>Каждая контора начинается прежде всего с персоналий. Поэтому при работе с кем-либо я чаще
+									всего обращаю внимание именно на это. С кем я веду дела и какого качества эти люди.
+									Я заказываю мелким оптом и мой объём по меркам пацанов просто смешной. Тем не менее
+									я никогда не чувствую себя мелким клиентом. Отношение максимально уважительное, приоритет
+									высокий. Чувствуешь, что к тебе относятся как к настоящему другу.</p></strong>
+							</div>
+							<div class="single-pf">
+								<img src="static/img/client4.png" alt="#">
+								<p class="review"><b>Альберт, менеджер по закупкам</b><br>
+								<strong><br>Отличный партнёр по бизнесу. Всем рекомендую! Подбирают аналоги, если какой-то
+									позиции нет. Консультируют грамотно, видно, что в теме давно. Отгружают без задержек,
+									присылают фотки комплектации, упаковки. Очень удобно, что есть доставка разными ТК. </p></strong>
+							</div>
+							<div class="single-pf">
+								<img src="static/img/client5.png" alt="#">
+								<p class="review"><b>Александр, директор предприятия</b><br>
+								<strong><br>Работаем с Агротеком уже много лет. Ребята всегда на контакте и предлагают выходы из
+									непростых ситуаций, когда что-то исчезает из ассортимента. Неоднократно выручали в моменте.
+									Находили какие-то схематозы как притащить санкционку или как придумать аналог, что
+									прикрутить, на что можно заменить. В общем, для меня один из самых надёжных партнёров.</p></strong>
+							</div>
+							<div class="single-pf">
+								<img src="static/img/client6.png" alt="#">
+								<p class="review"><b>Роман, менеджер по закупкам</b><br>
+								<strong><br>Что мне нравится в пацанах, так это осведомлённость в своей теме. Ездят, посещают
+									выставки, находят новые решения и материалы. Всегда можно набрать и спросить какой-то
+									вопрос. По производству всегда ищут какие-то новые возможности и подрядчиков. Это
+									положительно отражается на цене, что позволяет сокращать издержки в непростое время кризиса.</p></strong>
+							</div>
+							<div class="single-pf">
+								<img src="static/img/client7.png" alt="#">
+								<p class="review"><b>Максим, проектировщик</b><br>
+								<strong><br>Я могу сказать, что к пацанам можно обратиться буквально по любому вопросу. При
+									необходимости и заинтересованности, они могут достать из-под земли что угодно. Опыт,
+									как говорится, не пропьёшь! Лично наблюдаю становление Агротека на протяжении всех
+									лет существования фирмы. И желаю парням лишь развития и достижения новых высот.
+									Это классные люди, в которых я уверен. </p></strong>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<!--/ End portfolio -->
+
+		<!-- Start Blog Area -->
+		<section class="blog section" id="blog">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="section-title">
+							<h2>Блог, новости и статьи.</h2>
+						</div>
+					</div>
+				</div>
+				<div class="row-blog">
+				  {% for post in posts %}
+					<div class="col-lg-4 col-md-6 col-12">
+						<a href="{{ url_for('blog') }}" class="blog-card-link">
+						  <div class="single-news">
+							<div class="news-head">
+							  <img src="{{ url_for('static', filename='uploads/' + post.photo_filename) }}" alt="#">
+							</div>
+							<div class="news-body">
+							  <div class="news-content">
+								<div class="date">{{ post.date.strftime('%d %B, %Y') }}</div>
+								<h2><a href="{{ url_for('blog') }}">{{ post.title }}</a></h2>
+								<p class="text">{{ post.subtitle }}</p>
+							  </div>
+							</div>
+						  </div>
+						</a>
+					</div>
+				  {% endfor %}
+				</div>
+			</div>
+		</section>
+		<!-- End Blog Area -->
+
+		<!-- Start clients -->
+		<div class="clients overlay">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12 col-md-12 col-12">
+						<div class="owl-carousel clients-slider">
+							<div class="single-clients">
+								<img src="static/icons/kamaz.svg" alt="KamAZ">
+							</div>
+							<div class="single-clients">
+								<img src="static/icons/maz.svg" alt="MAZ">
+							</div>
+							<div class="single-clients">
+								<img src="static/icons/volvo.svg" alt="Volvo">
+							</div>
+							<div class="single-clients">
+								<img src="static/icons/man.svg" alt="MAN">
+							</div>
+							<div class="single-clients">
+								<img src="static/icons/scania.svg" alt="Scania">
+							</div>
+							<div class="single-clients">
+								<img src="static/icons/daf.svg" alt="DAF">
+							</div>
+							<div class="single-clients">
+								<img src="static/icons/mercedes.svg" alt="Mercedes">
+							</div>
+							<div class="single-clients">
+								<img src="static/icons/caterpillar.svg" alt="Caterpillar">
+							</div>
+							<div class="single-clients">
+								<img src="static/icons/case.svg" alt="Case">
+							</div>
+							<div class="single-clients">
+								<img src="static/icons/johndeere.svg" alt="JohnDeere">
+							</div>
+							<div class="single-clients">
+								<img src="static/icons/jcb.svg" alt="JCB">
+							</div>
+							<!--<div class="single-clients">
+								<img src="static/icons/deutz-fahr.svg" alt="Deutz">
+							</div>-->
+							<div class="single-clients">
+								<img src="static/icons/komatsu.svg" alt="Komatsu">
+							</div>
+							<div class="single-clients">
+								<img src="static/icons/cummins.svg" alt="Cummins">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--/Ens clients -->
+
+		<!-- Start Newsletter Area -->
+		<section class="newsletter section">
+			<div class="container">
+				<div class="row ">
+					<div class="col-lg-6  col-12">
+						<!-- Start Newsletter Form -->
+						<div class="subscribe-text ">
+							<h6>Подпишитесь на наши новости</h6>
+							<p class="">Мы не тревожим по пустякам и не сыплем тонну спама.
+								Присылаем уведомления только по делу - об акциях и распродажах,
+								о новых постах или обзорах в блоге, а также присылаем нашим друзьям
+								поздравления с крупными праздниками.
+								Подписывайтесь, чтобы быть на связи, вместе веселее!</p>
+						</div>
+						<!-- End Newsletter Form -->
+					</div>
+					<div class="subscribe_window">
+						<!-- Start Newsletter Form -->
+						<div class="subscribe-form ">
+							<form action="{{ url_for('subscribe') }}" method="post" class="newsletter-inner">
+								<input type="hidden" name="return_url" value="{{ request.path }}#footer">
+								<input name="email" type="email" placeholder="Ваш email" class="common-input" required>
+								<button class="btn">Подписаться</button>
+							</form>
+						</div>
+						<!-- End Newsletter Form -->
+					</div>
+				</div>
+			</div>
+		</section>
+		<!-- /End Newsletter Area -->
+
+{% endblock %}

@@ -1,0 +1,137 @@
+
+{% extends 'base.html' %}
+
+{% block title %}
+<title>{{ product.name }}</title>
+{% endblock %}
+
+{% block body %}
+
+		<!-- Header Area -->
+		<header class="header" >
+			<!-- Header Inner -->
+			<div class="header-inner">
+				<div class="container">
+					<div class="inner">
+						<div class="row">
+							<div class="col-lg-3 col-md-3 col-12">
+								<!-- Start Logo -->
+								<div class="logo">
+									<a href="/home"><img src="{{ url_for('static', filename='/img/logo-header.png') }}" alt="#"></a>
+								</div>
+								<!-- End Logo -->
+								<!-- Mobile Nav -->
+								<div class="mobile-nav"></div>
+								<!-- End Mobile Nav -->
+							</div>
+							<div class="col-lg-7 col-md-9 col-12">
+								<!-- Main Menu -->
+								<div class="main-menu">
+									<nav class="navigation">
+										<ul class="nav menu">
+											<li><a href="/">Главная </a></li>
+											<li><a href="/catalog">Каталог </a></li>
+											<li><a href="/blog">Блог </a></li>
+											<li><a href="/about">О нас</a></li>
+											<li><a href="/contacts">Контакты </a></li>
+											<li class="mobile-only">
+												<a href="/apply" class="btn btn-mobile">Сделать заявку</a>
+							    			</li>
+										</ul>
+									</nav>
+								</div>
+								<!--/ End Main Menu -->
+							</div>
+							<div class="col-lg-2 col-12">
+								<div class="get-quote">
+									<a href="/apply" class="btn">Сделать заявку</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--/ End Header Inner -->
+		</header>
+		<!-- End Header Area -->
+
+    <!-- Product Card -->
+		<section class="prod_card">
+			<div class="card_of_product">
+			  <!-- Левая часть с фото -->
+			  <div class="left_photo_of_product">
+				{% if product.photo_filename %}
+				  <img src="{{ url_for('static', filename='uploads/' + product.photo_filename) }}" alt="Фото товара">
+				{% else %}
+				  <img src="{{ url_for('static', filename='img/default-product.png') }}" alt="Нет фото">
+				{% endif %}
+			  </div>
+
+			  <!-- Правая часть с текстом -->
+			  <div class="right_info_of_product show-icon">
+				  <i class="corner-icon icofont-gear"></i>
+				  <div class="name_row">
+					  <p class="name_prod">{{ product.name }}</p>
+				  </div>
+				  <div class="field-row_price">{{ product.price }} ₽</div>
+				  <div class="field-row_options">Артикул: <strong>{{product.article }}</strong></div>
+				  <div class="field-row_type">Тип фильтра: <strong>{{ product.category }}</strong></div>
+				  <div class="field-row_options">Марка авто: <strong>{{ product.brand.name }}</strong></div>
+				  <div class="field-row_options">Тип техники: <strong>{{ product.type }}</strong></div>
+				  <div class="field-row_options">Комплектация: <strong>{{ product.complete_set }}</strong></div>
+				  <div class="field-row_type">Полное название: <strong>{{ product.full_marking }}</strong></div>
+				  <div class="field-row">
+				      <span class="label">Описание:</span>
+				      <p class="short-text" id="description">
+					    {{ product.description }}
+				      </p>
+				      <a href="#" class="read-more" onclick="toggleDescription(event)">Читать далее...</a>
+				  </div>
+				  <div class="field-row_op">Наше мнение: <br><strong><br>{{ product.our_opinion }}</strong></div>
+				  <div class="product-meta">
+					  <button class="btn btn-share1" onclick="copyLinkAndChangeText(this)" type="button">
+						  Поделиться
+					  </button>
+				  </div>
+			  </div>
+			</div>
+		</section>
+		<form id="copy-link-form" action="{{ url_for('copy_link') }}" method="post" style="display: none;">
+		  <input type="hidden" name="return_url" value="{{ request.path }}">
+		</form>
+		<script>
+		  function copyLinkAndChangeText(button) {
+			const originalText = button.textContent;
+			navigator.clipboard.writeText(window.location.href)
+			  .then(() => {
+				button.textContent = "Скопировано!";
+				button.disabled = true;
+
+				setTimeout(() => {
+				  button.textContent = originalText;
+				  button.disabled = false;
+				}, 2000);
+			  })
+			  .catch(err => {
+				console.error("Ошибка копирования:", err);
+				button.textContent = "Ошибка";
+				setTimeout(() => {
+				  button.textContent = originalText;
+				}, 2000);
+			  });
+		  }
+		</script>
+
+    <!-- End Product Card -->
+			<script>
+			  function toggleDescription(e) {
+				e.preventDefault();
+				const link = e.target;
+				const container = link.closest('.field-row');
+				const text = container.querySelector('.short-text');
+
+				text.classList.toggle('expanded');
+				link.textContent = text.classList.contains('expanded') ? 'Скрыть' : 'Читать далее';
+			  }
+			</script>
+{% endblock %}

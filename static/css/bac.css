@@ -1,0 +1,176 @@
+/*=======================
+   Search in catalog
+========================*/
+.catalog-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.search-form {
+  display: flex;
+  max-width: 1110px;
+  width: 100%;
+  position: relative;
+}
+
+.search-form input[type="text"] {
+  width: 100%;
+  padding: 10px 40px 10px 15px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.search-form button {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: #444;
+}
+
+.filter-form {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: center;
+}
+
+.filter-form select {
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+}
+
+.price-filter {
+  position: relative;
+}
+
+.price-filter .dropdown-toggle {
+  background: #f9f9f9;
+  border: 1px solid #ccc;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.price-filter .dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 110%;
+  left: 0;
+  z-index: 100;
+  background: #fff;
+  padding: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  height; 42px;
+  weight: 200px;
+  width: 220px;
+}
+
+.price-filter.show .dropdown-menu {
+  display: block;
+}
+
+.price-filter .dropdown-menu label {
+  font-size: 13px;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.price-filter .dropdown-menu input {
+  width: 100%;
+  padding: 6px 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.price-filter .dropdown-menu button {
+  width: 100%;
+  padding: 8px;
+  background: #ddd;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.price_btn{
+    background-color: #fff;
+    border-radius: 5px;
+    border: solid 1px #e8e8e8;
+    box-sizing: border-box;
+    clear: both;
+    cursor: pointer;
+    color: #888888;
+    display: flex;
+    align-items: center;
+    float: left;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: normal;
+    height: 42px;
+    justify-content: space-between;
+    line-height: 27px;
+    outline: none;
+    padding-left: 18px;
+    padding-right: 10px;
+    position: relative;
+    text-align: left !important;
+    width: 200px;
+    margin-bottom: 16px;
+}
+
+.icofont-simple-down {
+  font-size: 20px;
+  line-height: 1;
+  margin-right: -5px;
+  color: #888888;
+}
+
+/* При наведении*/
+.price_btn:hover {
+  border-color: #1A76D1;
+  outline: 0;
+}
+
+/* при клике */
+.price_btn:focus {
+  border-color: #888888;
+  outline: none;
+}
+
+.card {
+  border-radius: 5px;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+.card:hover {
+  transform: scale(1.02);
+}
+.card-img-top {
+  border-bottom: 1px solid #eee;
+  padding: 25px;
+}
+.card_price {
+  text-align: center;
+  text-size: 1.5rem;
+  color: #1A76D1;
+  font-weight: bold;
+}
+
+/*=============================
+    End Search in catalog
+=============================*/

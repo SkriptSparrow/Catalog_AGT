@@ -1,20 +1,22 @@
-# --- IDE / tooling ---
+# IDE folders
 .idea/
 .vscode/
-__pycache__/
-*.pyc
 
-# --- Virtual env ---
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Virtual environments
 .venv/
 
-# --- Backups & deployments ---
+# Backup and instance data
 bak/
 instance/
 
-# --- Secrets & configs ---
+# Secrets and keys
 .env
-GoogleMapsAPI
+GoogleMapsAPI.*
 
-# --- OS / misc ---
+# OS files
 .DS_Store
 Thumbs.db

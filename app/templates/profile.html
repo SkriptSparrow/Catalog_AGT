@@ -1,0 +1,394 @@
+
+{% extends 'base.html' %}
+
+
+{% block title %}
+<title>Личный кабинет</title>
+{% endblock %}
+
+{% block body %}
+
+		<!-- Header Area -->
+		<header class="header" >
+			<!-- Header Inner -->
+			<div class="header-inner">
+				<div class="container">
+					<div class="inner">
+						<div class="row">
+							<div class="col-lg-3 col-md-3 col-12">
+								<!-- Start Logo -->
+								<div class="logo">
+									<a href="/home"><img src="{{ url_for('static', filename='img/logo-header.png') }}" alt="Логотип Агротек"></a>
+								</div>
+								<!-- End Logo -->
+								<!-- Mobile Nav -->
+								<div class="mobile-nav"></div>
+								<!-- End Mobile Nav -->
+							</div>
+							<div class="col-lg-7 col-md-9 col-12">
+								<!-- Main Menu -->
+								<div class="main-menu">
+									<nav class="navigation">
+										<ul class="nav menu">
+											<li><a href="/">Главная</a></li>
+											<li><a href="/catalog">Каталог</a></li>
+											<li><a href="/blog">Блог</a></li>
+											<li><a href="/about">О нас</a></li>
+											<li><a href="/contacts">Контакты</a></li>
+											<li class="mobile-only">
+												{% if current_user.is_authenticated %}
+													<a href="{{ url_for('prof.profile') }}" class="btn btn-mobile">Личный кабинет</a>
+												{% else %}
+													<a href="{{ url_for('auth.user_login') }}" class="btn btn-mobile">Авторизация</a>
+												{% endif %}
+											</li>
+										</ul>
+									</nav>
+								</div>
+								<!--/ End Main Menu -->
+							</div>
+
+							<div class="col-lg-2 col-12">
+								<div class="get-quote">
+									{% if current_user.is_authenticated %}
+										<a href="{{ url_for('prof.profile') }}" class="btn">Личный кабинет</a>
+									{% else %}
+										<a href="{{ url_for('auth.user_login') }}" class="btn">Вход / Регистрация</a>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--/ End Header Inner -->
+		</header>
+		<!-- End Header Area -->
+
+		<!-- Profile Section -->
+        <section class="profile section">
+			<div class="container">
+				<div class="profile-inner">
+					<div class="row">
+
+						<!-- Левая колонка: корзина -->
+						<div class="profile-left">
+							<div class="profile-info-card">
+								<div class="profile-info-columns">
+									<div>
+										<h5 class="title_cart_main">В корзине:</h5>
+										{% if cart_items %}
+											<ul class="cart-profile-list">
+												{% for item in cart_items %}
+									  				<li class="cart-profile-item">
+
+														<!-- Фото товара -->
+														<div class="cart-image-qty d-flex align-items-center me-3">
+														    <img src="{{ url_for('static', filename='uploads/' ~ item.product.photo_filename) }}"
+															     alt="{{ item.product.name }}"
+															     class="cart-thumb">
+														    <span class="ms-2 text-muted cart-qty-label" data-product-id="{{ item.product.id }}">×{{ item.quantity }}</span>
+														</div>
+
+														<!-- Название и артикул -->
+														<div class="cart-title">
+															<div><strong>{{ item.product.name }}</strong></div>
+															<div class="text-muted small">Арт: {{ item.product.article }}</div>
+														</div>
+
+														<!-- Кнопки [-] 2 [+] -->
+														<div class="cart-qty-form">
+														    <div class="cart-quantity ms-3" data-product-id="{{ item.product.id }}">
+																<button class="qty-btn minus">−</button>
+																<span class="qty-count">{{ item.quantity }}</span>
+																<button class="qty-btn plus">+</button>
+														    </div>
+														</div>
+
+														<!-- Кнопка удаления -->
+														<form method="POST" action="{{ url_for('cart.remove_from_cart') }}">
+															<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+															<input type="hidden" name="product_id" value="{{ item.product.id }}">
+															<button type="submit" class="btn btn-sm btn-outline-danger cart-delete-btn">
+																<i class="icofont-ui-delete"></i>
+															</button>
+														</form>
+													</li>
+												{% endfor %}
+
+												<!-- Кнопка заказать -->
+												<div class="form-group" style="text-align: center; margin-top: 1rem;">
+							    					<button type="submit" name="Send" value="Submit" class="apply_btn">Заказать</button>
+												</div>
+								  			</ul>
+										{% else %}
+								  			<p class="text-muted">Корзина пуста</p>
+										{% endif %}
+									</div>
+								</div>
+						  	</div>
+						</div>
+
+
+						<!-- Правая колонка: карточка пользователя -->
+						<div class="profile-right">
+							<div class="profile-card">
+								<div class="profile-img-wrapper">
+									<img src="{{ url_for('static', filename='uploads/' + user.photo_filename) if user.photo_filename else url_for('static', filename='img/default-person.png') }}"
+										 alt="Фото профиля"
+										 class="profile-img">
+								</div>
+								<h5 class="profile-name">{{user.name or user.email}}</h5>
+								<p class="profile-job">{{ user.job_title or '-----------' }}</p>
+								<p class="profile-company">{{ user.company_name or 'Физическое лицо' }}</p>
+								<hr>
+								<div class="profile-contact">
+									<p>
+										<i class="icofont-phone contact-icon"></i>
+										{{ user.phone or 'Телефон не указан' }}
+									</p>
+									<p>
+										<i class="icofont-email contact-icon"></i>
+										{{ user.email or 'Email не указан' }}
+									</p>
+								</div>
+								<div class="profile-edit-btn" style="text-align: center; margin: 10px 0;">
+									<a href="{{ url_for('prof.profile_edit') }}"
+									   class="btn btn-profile btn-blue">Редактировать профиль</a>
+								</div>
+								<div class="profile-orders-btn" style="text-align: center; margin: 10px 0;">
+    								<a href="{{ url_for('prof.order_list') }}"
+									   class="btn btn-profile btn-outline-blue">
+        								Мои заказы
+    								</a>
+								</div>
+								<div class="profile-logout-btn" style="text-align: center; margin: 10px 0;">
+    								<a href="{{ url_for('auth.user_logout') }}"
+									   class="btn btn-profile btn-blue">
+        								Выйти из профиля
+    								</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+        <!-- End Profile Section -->
+<style>
+.cart-profile-list {
+	display: flex;
+	flex-direction: column;
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+    gap: 20px;
+}
+
+.profile-left {
+	flex: 1 1 70%;
+}
+
+.profile-right {
+	flex: 0 0 30%;
+}
+
+.profile-card {
+	gap: 10px;
+	border-radius: 12px;
+	padding: 24px;
+	text-align: center;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+	background-color: #fff;
+	margin: 0 10px;
+}
+
+.title_cart_main{
+	color: #2C2D3F;
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.cart-profile-item {
+  display: flex;
+  justify-content: space-between; /* или space-around */
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+  gap: 20px; /* необязательно, но помогает */
+  flex-wrap: wrap; /* чтобы на узких экранах не ломалось */
+}
+
+.cart-photo-block {
+  width: 70px;
+}
+
+.cart-thumb {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.cart-image-qty {
+	gap: 10px;
+}
+
+.cart-qty-label {
+	color: #2C2D3F;
+    font-size: 17px;
+}
+
+.cart-title {
+  flex: 1;
+}
+
+.cart-qty-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cart-quantity {
+  display: flex;  /* обязательно! */
+  gap: 8px;
+}
+
+.qty-btn {
+  background: white;
+  color: #1a76d1;
+  border: 1px solid #ddd;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.qty-count {
+  min-width: 20px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #2C2D3F;
+  font-size: 17px;
+}
+
+.cart-delete-btn {
+  padding: 4px 6px;
+  font-size: 14px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 40px;
+}
+
+.profile-img {
+	width: 160px;
+	height: 160px;
+	border-radius: 50%;
+	object-fit: cover;
+	margin: 0 auto 16px auto;
+}
+
+.profile-name {
+	font-size: 20px;
+	color: #2C2D3F;
+	margin-bottom: 4px;
+}
+
+.profile-job {
+	color: #2C2D3F;
+	margin-bottom: 4px;
+}
+
+.profile-company {
+	color: #888;
+	margin-bottom: 16px;
+}
+
+.profile-contact p {
+	margin: 8px 0;
+	color: #444;
+}
+
+.profile-info-card {
+	width: 100%;
+	border-radius: 12px;
+	padding: 32px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+	background-color: #fff;
+}
+
+.profile-info-card h2 {
+	font-size: 28px;
+	color: #2C2D3F;
+	margin-bottom: 24px;
+}
+
+.profile-info-columns {
+	width: 100%;
+	gap: 20px;
+}
+
+.btn-edit-profile {
+  color: white;
+}
+
+.profile-contact {
+  margin-top: 10px;
+  font-size: 16px;
+  color: #333;
+  line-height: 1.6;
+}
+
+.profile-contact .contact-icon {
+  margin-right: 8px;
+  font-size: 16px;
+  color: #1a76d1;
+  vertical-align: middle;
+}
+
+.btn-profile {
+  display: inline-block;
+  width: 200px; /* одинаковая ширина */
+  padding: 10px 0;
+  font-size: 14px;
+  border-radius: 6px;
+  text-align: center;
+  font-weight: 500;
+  transition: 0.2s ease;
+}
+
+/* Синие кнопки с белым текстом */
+.btn-blue {
+  background-color: #1a76d1;
+  color: white;
+  border: 1px solid #1a76d1;
+}
+
+.btn-blue:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+/* Белая кнопка с синей обводкой и текстом */
+.btn-outline-blue {
+  background-color: white;
+  color: #1a76d1;
+  border: 1px solid #1a76d1;
+}
+
+.btn-outline-blue:hover {
+  background-color: #e6f0ff;
+  color: #0056b3;
+  border-color: #0056b3;
+}
+
+</style>
+
+{% endblock %}

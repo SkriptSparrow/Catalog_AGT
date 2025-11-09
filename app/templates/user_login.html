@@ -1,0 +1,175 @@
+
+{% extends 'base.html' %}
+
+
+{% block title %}
+<title>Авторизация</title>
+{% endblock %}
+
+{% block body %}
+
+
+		<!-- Header Area -->
+		<header class="header" >
+			<!-- Header Inner -->
+			<div class="header-inner">
+				<div class="container">
+					<div class="inner">
+						<div class="row">
+							<div class="col-lg-3 col-md-3 col-12">
+								<!-- Start Logo -->
+								<div class="logo">
+									<a href="/home"><img src="{{ url_for('static', filename='img/logo-header.png') }}" alt="Логотип Агротек"></a>
+								</div>
+								<!-- End Logo -->
+								<!-- Mobile Nav -->
+								<div class="mobile-nav"></div>
+								<!-- End Mobile Nav -->
+							</div>
+							<div class="col-lg-7 col-md-9 col-12">
+								<!-- Main Menu -->
+								<div class="main-menu">
+									<nav class="navigation">
+										<ul class="nav menu">
+											<li><a href="/">Главная</a></li>
+											<li><a href="/catalog">Каталог</a></li>
+											<li><a href="/blog">Блог</a></li>
+											<li><a href="/about">О нас</a></li>
+											<li><a href="/contacts">Контакты</a></li>
+											<li class="mobile-only">
+												{% if current_user.is_authenticated %}
+													<a href="{{ url_for('prof.profile') }}" class="btn btn-mobile">Личный кабинет</a>
+												{% else %}
+													<a href="{{ url_for('auth.user_login') }}" class="btn btn-mobile">Авторизация</a>
+												{% endif %}
+											</li>
+										</ul>
+									</nav>
+								</div>
+								<!--/ End Main Menu -->
+							</div>
+
+							<div class="col-lg-2 col-12">
+								<div class="get-quote">
+									{% if current_user.is_authenticated %}
+										<a href="{{ url_for('prof.profile') }}" class="btn">Личный кабинет</a>
+									{% else %}
+										<a href="{{ url_for('auth.user_login') }}" class="btn">Вход / Регистрация</a>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--/ End Header Inner -->
+		</header>
+		<!-- End Header Area -->
+
+<section class="authorization section">
+    <div class="container">
+        <div class="inner">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            <div class="row">
+                    <!-- Левая половина (синий фон) -->
+                <div class="auth-side left-half">
+                    <div class="col-12 inner-auth">
+
+                      <!-- Заголовок -->
+                        <div class="auth-header" title="Если вы уже зарегистрированы">
+                            <h2 class="tab-left">Войти в аккаунт</h2>
+                        </div>
+
+                      <!-- Поля -->
+                        <form method="POST">
+                            <div class="auth-form">
+                                {{ login_form.hidden_tag() }}
+
+                            <div>
+                                {{ login_form.email.label }}<br>
+                                {{ login_form.email(size=32) }}<br>
+                                {% for error in login_form.email.errors %}
+                                    <span style="color:red;">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+
+                            <div>
+                                {{ login_form.password.label }}<br>
+                                {{ login_form.password(size=32) }}<br>
+                                {% for error in login_form.password.errors %}
+                                    <span style="color:red;">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+
+                            <div>
+                              {{ login_form.remember() }} {{ login_form.remember.label }}
+                            </div>
+                        </div>
+
+                        <!-- Кнопка -->
+                        <div class="auth-button">
+                            <input type="submit" name="action" value="Войти">
+                        </div>
+                        </form>
+                    </div>
+                </div>
+
+              <!-- Правая половина (белый фон) -->
+                <div class="auth-side right-half">
+                    <div class="col-12 inner-auth">
+
+                      <!-- Заголовок -->
+                        <div class="auth-header" title="Если вы здесь впервые">
+                            <h2 class="tab-right">Регистрация</h2>
+                        </div>
+
+                      <!-- Поля -->
+                        <form method="POST">
+                            <div class="auth-form">
+
+                                {{ register_form.hidden_tag() }}
+
+                            <div>
+                                {{ register_form.email.label }}<br>
+                                {{ register_form.email(size=32) }}<br>
+                                {% for error in register_form.email.errors %}
+                                    <span style="color:red;">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+
+                            <div>
+                                {{ register_form.password.label }}<br>
+                                {{ register_form.password(size=32) }}<br>
+                                {% for error in register_form.password.errors %}
+                                    <span style="color:red;">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+
+                            <div>
+                                {{ register_form.confirm_password.label }}<br>
+                                {{ register_form.confirm_password(size=32) }}<br>
+                                {% for error in register_form.confirm_password.errors %}
+                                    <span style="color:red;">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                      <!-- Кнопка -->
+                        <div class="auth-button">
+                            <input type="submit" name="action" value="Зарегистрироваться">
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

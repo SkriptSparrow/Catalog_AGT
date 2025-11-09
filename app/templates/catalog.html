@@ -1,0 +1,217 @@
+
+{% extends 'base.html' %}
+
+{% block title %}
+<title>Агротек Каталог</title>
+{% endblock %}
+
+{% block body %}
+
+		<!-- Header Area -->
+		<header class="header" >
+			<!-- Header Inner -->
+			<div class="header-inner">
+				<div class="container">
+					<div class="inner">
+						<div class="row">
+							<div class="col-lg-3 col-md-3 col-12">
+								<!-- Start Logo -->
+								<div class="logo">
+									<a href="/home"><img src="{{ url_for('static', filename='img/logo-header.png') }}" alt="Логотип Агротек"></a>
+								</div>
+								<!-- End Logo -->
+								<!-- Mobile Nav -->
+								<div class="mobile-nav"></div>
+								<!-- End Mobile Nav -->
+							</div>
+							<div class="col-lg-7 col-md-9 col-12">
+								<!-- Main Menu -->
+								<div class="main-menu">
+									<nav class="navigation">
+										<ul class="nav menu">
+											<li><a href="/">Главная</a></li>
+											<li class="active"><a href="/catalog">Каталог</a></li>
+											<li><a href="/blog">Блог</a></li>
+											<li><a href="/about">О нас</a></li>
+											<li><a href="/contacts">Контакты</a></li>
+											<li class="mobile-only">
+												{% if current_user.is_authenticated %}
+													<a href="{{ url_for('prof.profile') }}" class="btn btn-mobile">Личный кабинет</a>
+												{% else %}
+													<a href="{{ url_for('auth.user_login') }}" class="btn btn-mobile">Авторизация</a>
+												{% endif %}
+											</li>
+										</ul>
+									</nav>
+								</div>
+								<!--/ End Main Menu -->
+							</div>
+
+							<div class="col-lg-2 col-12">
+								<div class="get-quote">
+									{% if current_user.is_authenticated %}
+										<a href="{{ url_for('prof.profile') }}" class="btn">Личный кабинет</a>
+									{% else %}
+										<a href="{{ url_for('auth.user_login') }}" class="btn">Вход / Регистрация</a>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--/ End Header Inner -->
+		</header>
+		<!-- End Header Area -->
+
+		<!--Catalog Page-->
+		<section class="pf-details section">
+			<div class="container">
+		<!-- Search-->
+			<div class="catalog-filters">
+			<!-- Search by name or article -->
+			  <form method="get" action="{{ url_for('main.catalog') }}" class="search-form">
+				<input type="text" name="q" placeholder="Поиск по названию или артикулу" value="{{ request.args.get('q', '') }}">
+				<button type="submit"><i class="icofont-search"></i></button>
+			  </form>
+			<!-- Filters: sort, type, category, brand, price -->
+			  <form method="get" action="{{ url_for('main.catalog') }}" class="filter-form">
+				<input type="hidden" name="q" value="{{ request.args.get('q', '') }}">
+
+				<!-- Sorting -->
+				<select name="sort" onchange="this.form.submit()">
+				  <option value="">По умолчанию</option>
+				  <option value="name_asc" {% if request.args.get('sort') == 'name_asc' %}selected{% endif %}>Имя: А → Я</option>
+				  <option value="name_desc" {% if request.args.get('sort') == 'name_desc' %}selected{% endif %}>Имя: Я → А</option>
+				  <option value="price_asc" {% if request.args.get('sort') == 'price_asc' %}selected{% endif %}>Цена ↑</option>
+				  <option value="price_desc" {% if request.args.get('sort') == 'price_desc' %}selected{% endif %}>Цена ↓</option>
+				</select>
+
+				<!-- Filters -->
+				<select name="type" onchange="this.form.submit()">
+				  <option value="">Все типы</option>
+				  {% for t in types %}
+					<option value="{{ t }}" {% if request.args.get('type') == t %}selected{% endif %}>{{ t }}</option>
+				  {% endfor %}
+				</select>
+
+				<select name="category" onchange="this.form.submit()">
+				  <option value="">Все категории</option>
+				  {% for c in categories %}
+					<option value="{{ c }}" {% if request.args.get('category') == c %}selected{% endif %}>{{ c }}</option>
+				  {% endfor %}
+				</select>
+
+				<select name="brand" onchange="this.form.submit()">
+				  <option value="">Все марки</option>
+				  {% for b in brands %}
+					<option value="{{ b.id }}" {% if request.args.get('brand') == b.id|string %}selected{% endif %}>{{ b.name }}</option>
+				  {% endfor %}
+				</select>
+				<div class="dropdown price-filter">
+				  <button type="button" class="price_btn">
+					Цена, ₽ <i class="icofont-simple-down"></i>
+				  </button>
+
+				  <div class="dropdown-menu custom-price">
+					<label>От</label>
+					<input type="number" name="price_min" min="0" value="{{ request.args.get('price_min', '') }}">
+
+					<label>До</label>
+					<input type="number" name="price_max" min="0" value="{{ request.args.get('price_max', '') }}">
+
+					<button type="submit">Готово</button>
+				  </div>
+				</div>
+			  </form>
+			</div>
+
+		<!--Tile of product catalog from db-->
+				<div class="products_grid">
+				  {% for product in products %}
+					<!-- Product tile (with image, name, category, price, article) -->
+					<div class="product_card_cell">
+					  <div class="card h-100 shadow-sm">
+						{% if product.photo_filename %}
+						  <a href="{{ url_for('main.product_card', product_id=product.id) }}" class="product-link" target="_blank">
+						  	<img src="{{ url_for('static', filename='uploads/' + product.photo_filename) }}"
+								 class="card-img-top" style="object-fit: cover;">
+						  </a>
+						{% endif %}
+						<div class="card-body d-flex flex-column justify-content-between">
+						  <h5 class="card-title">
+							  <a href="{{ url_for('main.product_card', product_id=product.id) }}" class="product-name-link">
+								{{ product.name }}
+							  </a>
+						  </h5>
+
+						  <p class="card-type text-center text-muted">
+							 {{ product.category }} фильтр
+						  </p>
+
+						  <p class="card_price">
+							{{ product.price }} ₽
+						  </p>
+
+						  <div class="card-bottom d-flex justify-content-between align-items-center">
+							  {% if current_user.is_authenticated %}
+								{% set item = user_cart_items.get(product.id) %}
+
+								{% if item %}
+								  <!-- Если товар уже в корзине -->
+								  <div class="cart-quantity ms-3" data-product-id="{{ product.id }}">
+									<button class="qty-btn minus">−</button>
+									<span class="qty-count">{{ item.quantity }}</span>
+									<button class="qty-btn plus">+</button>
+								  </div>
+								{% else %}
+								  <!-- Если ещё не в корзине -->
+								  <button class="btn btn-cart-icon ms-3"
+										  data-product-id="{{ product.id }}"
+										  data-auth="true"
+										  style="background: none; border: none; padding: 0;">
+									<i class="icofont-cart cart-icon"></i>
+								  </button>
+								{% endif %}
+
+							  {% else %}
+								<!-- Неавторизованный пользователь -->
+								<button class="btn btn-cart ms-3"
+										data-product-id="{{ product.id }}"
+										data-auth="false">
+								  🛒 В корзину
+								</button>
+							  {% endif %}
+
+							  <p class="card-text text-center small text-secondary m-0">Арт: {{ product.article }}</p>
+							</div>
+
+						</div>
+					  </div>
+					</div>
+				  {% else %}
+					<p>Ничего не найдено.</p>
+				  {% endfor %}
+				</div>
+			</div>
+		</section>
+		<!-- End of product catalog section -->
+
+		<!-- JS: Toggle price filter dropdown -->
+			<script>
+		  document.addEventListener('DOMContentLoaded', function () {
+			const toggle = document.querySelector('.price-filter .price_btn');
+			const container = document.querySelector('.price-filter');
+
+			toggle.addEventListener('click', function () {
+			  container.classList.toggle('show');
+			});
+
+			document.addEventListener('click', function (e) {
+			  if (!container.contains(e.target)) {
+				container.classList.remove('show');
+			  }
+			});
+		  });
+		</script>
+{% endblock %}

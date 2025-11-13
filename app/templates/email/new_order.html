@@ -1,0 +1,29 @@
+<h2>🛒 Новый заказ №{{ order.order_number }}</h2>
+<p><strong>Имя:</strong> {{ order.full_name }}</p>
+<p><strong>Телефон:</strong> {{ order.phone }}</p>
+<p><strong>Email:</strong> {{ order.email }}</p>
+<p><strong>Компания:</strong> {{ order.company_name or '—' }}</p>
+
+<h3>Состав заказа:</h3>
+<table border="1" cellspacing="0" cellpadding="6">
+  <tr>
+    <th>Товар</th>
+    <th>Артикул</th>
+    <th>Кол-во</th>
+    <th>Цена</th>
+    <th>Сумма</th>
+  </tr>
+  {% for item in order.items %}
+  <tr>
+    <td>{{ item.product_name }}</td>
+    <td>{{ item.article }}</td>
+    <td>{{ item.quantity }}</td>
+    <td>{{ item.price }} ₽</td>
+    <td>{{ item.sum }} ₽</td>
+  </tr>
+  {% endfor %}
+  <tr>
+    <td colspan="4" align="right"><strong>Итого:</strong></td>
+    <td><strong>{{ order.total_sum }} ₽</strong></td>
+  </tr>
+</table>

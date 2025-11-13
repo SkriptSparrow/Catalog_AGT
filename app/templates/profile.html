@@ -117,9 +117,12 @@
 												{% endfor %}
 
 												<!-- Кнопка заказать -->
-												<div class="form-group" style="text-align: center; margin-top: 1rem;">
-							    					<button type="submit" name="Send" value="Submit" class="apply_btn">Заказать</button>
-												</div>
+												<form action="{{ url_for('cart.checkout') }}" method="POST">
+													<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+												    <div class="form-group" style="text-align: center; margin-top: 1rem;">
+														<button type="submit" class="apply_btn">Заказать</button>
+												    </div>
+												</form>
 								  			</ul>
 										{% else %}
 								  			<p class="text-muted">Корзина пуста</p>

@@ -1,0 +1,14 @@
+Новый заказ №{{ order.order_number }}
+
+От: {{ order.full_name }}
+Телефон: {{ order.phone }}
+Email: {{ order.email }}
+Компания: {{ order.company_name or '—' }}
+
+Товары:
+{% for item in order.items %}
+- {{ item.product_name }} ({{ item.article }}) — {{ item.quantity }} шт × {{ item.price }} = {{ item.sum }} ₽
+{% endfor %}
+
+Итого: {{ order.total_sum }} ₽
+

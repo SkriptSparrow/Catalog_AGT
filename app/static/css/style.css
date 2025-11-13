@@ -3831,20 +3831,24 @@ body{
 }
 .footer .single-footer .newsletter-inner{
 	margin-top:20px;
-	position:relative;
+	position: relative;
+    display: flex;
+    align-items: center;
+    height: 50px;
 }
 .footer .single-footer .newsletter-inner input {
+    flex: 1;
 	background: transparent;
 	border: 1px solid #fff;
 	height: 50px;
 	line-height: 42px;
 	width: 100%;
-	margin-right: 15px;
 	color: #fff;
+	margin-top: 0px;
+	margin-bottom: 0px;
 	padding-left: 18px;
-	padding-right: 70px;
+	padding-right: 50px;
 	display: inline-block;
-	float: left;
 	border-radius: 0px;
 	-webkit-transition: all 0.4s ease;
 	-moz-transition: all 0.4s ease;
@@ -3876,7 +3880,7 @@ body{
 .footer .single-footer .newsletter-inner .button {
 	position: absolute;
 	right: 0;
-	top: 0;
+	top: 0 !important;
 	height: 50px;
 	line-height: 50px;
 	width: 50px;
@@ -3905,9 +3909,9 @@ body{
 .footer .copyright{
     display: flex;
     flex-align: center;
-	background:#1a76d1;
-	padding:25px 0px 25px 0px;
-	text-align:center;
+	background: #1a76d1;
+	padding: 25px 0px 25px 0px;
+	text-align: center;
 }
 .footer .copyright .copyright-content p{
 	color:#fff;

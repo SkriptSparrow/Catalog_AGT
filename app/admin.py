@@ -23,7 +23,7 @@ def generate_filename(product_id, file_data):
         str: A unique filename based on the product ID and a UUID.
     """
     base = f"filter_{product_id}" if product_id else "photo"
-    ext = file_data.filename.rsplit('.', 1)[-1]
+    ext = file_data.filename.rsplit(".", 1)[-1]
     return f"{base}_{uuid.uuid4().hex}.{ext}"
 
 
@@ -31,42 +31,38 @@ class MyAdminIndexView(AdminIndexView):
     """
     Custom admin index view that requires an admin session to access.
     """
-    @expose('/')
+
+    @expose("/")
     def index(self):
         """
         Redirects to login page if not an admin. Otherwise shows the admin index.
         """
-        if not session.get('admin'):
-            return redirect(url_for('admin_login'))
+        if not session.get("admin"):
+            return redirect(url_for("admin_login"))
         return super().index()
 
 
 # Initialize Flask-Admin with custom index view
-admin = Admin(name='AGROTEK', template_mode='bootstrap4', index_view=MyAdminIndexView())
+admin = Admin(name="AGROTEK", template_mode="bootstrap4", index_view=MyAdminIndexView())
 
 
 class CarBrandAdmin(ModelView):
     """
     Admin view for managing car brands.
     """
-    form_columns = ['name']
-    column_default_sort = ('name', False)
-    column_sortable_list = ['name']
+
+    form_columns = ["name"]
+    column_default_sort = ("name", False)
+    column_sortable_list = ["name"]
 
 
 class ProductsView(ModelView):
     """
     Base admin view for filters with custom form widgets.
     """
-    form_overrides = {
-        'description': TextAreaField
-    }
-    form_widget_args = {
-        'description': {
-            'rows': 8,
-            'style': 'resize: vertical;'
-        }
-    }
+
+    form_overrides = {"description": TextAreaField}
+    form_widget_args = {"description": {"rows": 8, "style": "resize: vertical;"}}
 
 
 class ProductsAdmin(ProductsView):
@@ -74,40 +70,56 @@ class ProductsAdmin(ProductsView):
     Admin view for managing product entries in the catalog.
     Allows uploading images, filtering, and customizing form display.
     """
+
     column_list = (
-        'id', 'name', 'article', 'type', 'category',
-        'brand', 'price', 'in_stock', 'is_main', 'preview'
+        "id",
+        "name",
+        "article",
+        "type",
+        "category",
+        "brand",
+        "price",
+        "in_stock",
+        "is_main",
+        "preview",
     )
     form_columns = (
-        'name', 'article', 'full_marking',
-        'type', 'category', 'brand', 'price',
-        'description', 'in_stock', 'is_main',
-        'photo_upload'
+        "name",
+        "article",
+        "full_marking",
+        "type",
+        "category",
+        "brand",
+        "price",
+        "description",
+        "in_stock",
+        "is_main",
+        "photo_upload",
     )
-    column_filters = ('brand', 'type', 'category', 'in_stock', 'is_main')
+    column_filters = ("brand", "type", "category", "in_stock", "is_main")
     form_args = dict(
         brand={
-            'label': 'Марка авто',
-            'query_factory': lambda: CarBrand.query.order_by(CarBrand.name),
-            'get_label': 'name',
-            'validators': [DataRequired(message='Пожалуйста, выберите марку автомобиля')]
+            "label": "Марка авто",
+            "query_factory": lambda: CarBrand.query.order_by(CarBrand.name),
+            "get_label": "name",
+            "validators": [
+                DataRequired(message="Пожалуйста, выберите марку автомобиля")
+            ],
         }
     )
-    form_extra_fields = {
-        'photo_upload': FileField('Фотография')
-    }
+    form_extra_fields = {"photo_upload": FileField("Фотография")}
     column_labels = {
-        'name': 'Название',
-        'article': 'Артикул',
-        'full_marking': 'Полная маркировка',
-        'type': 'Тип техники',
-        'category': 'Категория фильтра',
-        'brand': 'Марка авто',
-        'price': 'Цена',
-        'description': 'Описание',
-        'in_stock': 'В наличии',
-        'is_main': 'На главной',
-        'preview': 'Фото'
+        "name": "Название",
+        "article": "Артикул",
+        "full_marking": "Полная маркировка",
+        "type": "Тип техники",
+        "category": "Категория фильтра",
+        "brand": "Марка авто",
+        "price": "Цена",
+        "description": "Описание",
+        "in_stock": "В наличии",
+        "is_main": "На главной",
+        "preview": "Фото",
     }
 
     def create_model(self, form):
@@ -124,9 +136,11 @@ class ProductsAdmin(ProductsView):
         filename = None
 
         if file and file.filename:
-            filename = generate_filename(form.brand.data.id if form.brand.data else None, file)
-            path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
-            os.makedirs(current_app.config['UPLOAD_FOLDER'], exist_ok=True)
+            filename = generate_filename(
+                form.brand.data.id if form.brand.data else None, file
+            )
+            path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
+            os.makedirs(current_app.config["UPLOAD_FOLDER"], exist_ok=True)
             file.save(path)
 
         product = Products(
@@ -140,11 +154,11 @@ class ProductsAdmin(ProductsView):
             description=form.description.data,
             is_main=form.is_main.data,
             in_stock=form.in_stock.data,
-            photo_filename=filename
+            photo_filename=filename,
         )
         db.session.add(product)
         db.session.commit()
-        return redirect(self.get_url('.index_view'))
+        return redirect(self.get_url(".index_view"))
 
     def _preview(view, context, model, name):
         """
@@ -160,12 +174,12 @@ class ProductsAdmin(ProductsView):
             Markup: HTML markup for image or empty string.
         """
         if model.photo_filename:
-            return Markup(f'<img src="/static/uploads/{model.photo_filename}" style="max-height: 80px;">')
-        return ''
+            return Markup(
+                f'<img src="/static/uploads/{model.photo_filename}" style="max-height: 80px;">'
+            )
+        return ""
 
-    column_formatters = {
-        'preview': _preview
-    }
+    column_formatters = {"preview": _preview}
 
 
 class BlogAdmin(ModelView):
@@ -173,24 +187,22 @@ class BlogAdmin(ModelView):
     Admin view for managing blog posts.
     Allows rich text input and image uploads.
     """
-    column_list = ('id', 'title', 'subtitle', 'text', 'date', 'autor', 'preview')
-    form_columns = ('title', 'subtitle', 'text', 'date', 'autor', 'photo_upload')
-    form_extra_fields = {'photo_upload': FileField('Фотография')}
-    column_default_sort = ('date', True)
+
+    column_list = ("id", "title", "subtitle", "text", "date", "autor", "preview")
+    form_columns = ("title", "subtitle", "text", "date", "autor", "photo_upload")
+    form_extra_fields = {"photo_upload": FileField("Фотография")}
+    column_default_sort = ("date", True)
     column_labels = {
-        'title': 'Заголовок',
-        'subtitle': 'Подзаголовок',
-        'text': 'Текст',
-        'date': 'Дата',
-        'autor': 'Автор',
+        "title": "Заголовок",
+        "subtitle": "Подзаголовок",
+        "text": "Текст",
+        "date": "Дата",
+        "autor": "Автор",
     }
-    form_overrides = {
-        'subtitle': TextAreaField,
-        'text': TextAreaField
-    }
+    form_overrides = {"subtitle": TextAreaField, "text": TextAreaField}
     form_widget_args = {
-        'subtitle': {'rows': 5, 'style': 'resize: vertical;'},
-        'text': {'rows': 8, 'style': 'resize: vertical;'}
+        "subtitle": {"rows": 5, "style": "resize: vertical;"},
+        "text": {"rows": 8, "style": "resize: vertical;"},
     }
 
     def create_model(self, form):
@@ -208,8 +220,8 @@ class BlogAdmin(ModelView):
 
         if file and file.filename:
             filename = generate_filename(None, file)
-            path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
-            os.makedirs(current_app.config['UPLOAD_FOLDER'], exist_ok=True)
+            path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
+            os.makedirs(current_app.config["UPLOAD_FOLDER"], exist_ok=True)
             file.save(path)
 
         post = Blog(
@@ -218,11 +230,11 @@ class BlogAdmin(ModelView):
             text=form.text.data,
             date=form.date.data,
             autor=form.autor.data,
-            photo_filename=filename
+            photo_filename=filename,
         )
         db.session.add(post)
         db.session.commit()
-        return redirect(self.get_url('.index_view'))
+        return redirect(self.get_url(".index_view"))
 
     def _preview(view, context, model, name):
         """
@@ -238,48 +250,50 @@ class BlogAdmin(ModelView):
             Markup: HTML with the image or empty string.
         """
         if model.photo_filename:
-            return Markup(f'<img src="/static/uploads/{model.photo_filename}" style="max-height: 80px;">')
-        return ''
+            return Markup(
+                f'<img src="/static/uploads/{model.photo_filename}" style="max-height: 80px;">'
+            )
+        return ""
 
-    column_formatters = {
-        'preview': _preview
-    }
+    column_formatters = {"preview": _preview}
 
 
 class SubscriberAdmin(ModelView):
     """
     Admin view for managing newsletter subscribers.
     """
-    column_list = ['email', 'date_subscribed', 'is_active']
-    column_filters = ['is_active']
-    column_searchable_list = ['email']
+
+    column_list = ["email", "date_subscribed", "is_active"]
+    column_filters = ["is_active"]
+    column_searchable_list = ["email"]
     can_create = False
     can_edit = True
     can_delete = True
 
 
 class UserAdmin(ModelView):
-    column_list = ['id', 'email', 'name', 'phone', 'user_type', 'job_title']
-    column_searchable_list = ['email', 'name']
-    column_filters = ['user_type']
-    form_excluded_columns = ['orders', 'password_hash']
+    column_list = ["id", "email", "name", "phone", "user_type", "job_title"]
+    column_searchable_list = ["email", "name"]
+    column_filters = ["user_type"]
+    form_excluded_columns = ["orders", "password_hash"]
 
 
 class OrderAdmin(ModelView):
-    column_list = ['id', 'user_email', 'created_at', 'status']
-    column_filters = ['status', 'created_at']
-    column_searchable_list = ['user.email']
-    form_columns = ['user', 'status']
+    column_list = ["id", "user_email", "created_at", "status"]
+    column_filters = ["status", "created_at"]
+    column_searchable_list = ["user.email"]
+    form_columns = ["user", "status"]
 
     def user_email(self, obj):
         return obj.user.email
-    user_email.short_description = 'Email клиента'
+
+    user_email.short_description = "Email клиента"
 
 
 # Registering all models in the admin interface
-admin.add_view(CarBrandAdmin(CarBrand, db.session, name='Brands'))
-admin.add_view(ProductsAdmin(Products, db.session, name='Products'))
-admin.add_view(BlogAdmin(Blog, db.session, name='Blog'))
+admin.add_view(CarBrandAdmin(CarBrand, db.session, name="Brands"))
+admin.add_view(ProductsAdmin(Products, db.session, name="Products"))
+admin.add_view(BlogAdmin(Blog, db.session, name="Blog"))
 admin.add_view(SubscriberAdmin(Subscriber, db.session))
-admin.add_view(UserAdmin(User, db.session, name='User'))
-admin.add_view(OrderAdmin(Order, db.session, name='Order'))
+admin.add_view(UserAdmin(User, db.session, name="User"))
+admin.add_view(OrderAdmin(Order, db.session, name="Order"))

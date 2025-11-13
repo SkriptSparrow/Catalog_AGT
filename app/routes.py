@@ -1,18 +1,36 @@
-from flask import Blueprint, render_template, redirect, request, session, url_for, flash, jsonify
+from flask import (
+    Blueprint,
+    render_template,
+    redirect,
+    request,
+    session,
+    url_for,
+    flash,
+    jsonify,
+)
 from flask_login import login_required, current_user
 from markupsafe import Markup
-from app.models import Subscriber, Blog, Products, CarBrand, CartItem
+from app.models import (
+    Subscriber,
+    Blog,
+    Products,
+    CarBrand,
+    CartItem,
+    OrderItem,
+    Order,
+    generate_order_number,
+)
 from flask_mail import Message
-from app import db, mail
+from app import db, mail, csrf
 from datetime import datetime, timezone
 import re
 import os
 
 
-main_bp = Blueprint('main', __name__)
+main_bp = Blueprint("main", __name__)
 
 
-@main_bp.app_template_filter('nl2br')
+@main_bp.app_template_filter("nl2br")
 def nl2br_filter(s):
     """
     Converts newlines to <br> HTML tags.
@@ -23,10 +41,11 @@ def nl2br_filter(s):
     Returns:
         Markup: String with <br> tags replacing newlines.
     """
-    return Markup(s.replace('\n', '<br>\n'))
+    return Markup(s.replace("\n", "<br>\n"))
 
 
-@main_bp.route('/subscribe', methods=['POST'])
+@main_bp.route("/subscribe", methods=["POST"])
+@csrf.exempt
 def subscribe():
     """
     Handles email newsletter subscription via POST request.
@@ -35,19 +54,27 @@ def subscribe():
     Returns:
         Response: Redirects to the referrer or homepage with a flash message.
     """
-    email = request.form.get('email', '').strip().lower()
+    email = request.form.get("email", "").strip().lower()
 
     # Basic email validation
     if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
         flash("Пожалуйста, введите корректный email.", "error")
-        return_url = request.form.get('return_url') or request.referrer or url_for('index') + '#footer'
+        return_url = (
+            request.form.get("return_url")
+            or request.referrer
+            or url_for("index") + "#footer"
+        )
         return redirect(return_url)
 
     # Check if already subscribed
     existing = Subscriber.query.filter_by(email=email).first()
     if existing:
         flash("Вы уже подписаны на рассылку.", "info")
-        return_url = request.form.get('return_url') or request.referrer or url_for('index') + '#footer'
+        return_url = (
+            request.form.get("return_url")
+            or request.referrer
+            or url_for("index") + "#footer"
+        )
         return redirect(return_url)
 
     # Save new subscriber
@@ -56,11 +83,16 @@ def subscribe():
     db.session.commit()
 
     flash("Спасибо за подписку!", "success")
-    return_url = request.form.get('return_url') or request.referrer or url_for('index') + '#footer'
+    return_url = (
+        request.form.get("return_url")
+        or request.referrer
+        or url_for("index") + "#footer"
+    )
     return redirect(return_url)
 
 
-@main_bp.route('/copy_link', methods=['POST'])
+@main_bp.route("/copy_link", methods=["POST"])
+@csrf.exempt
 def copy_link():
     """
     Dummy route to flash a 'link copied' message.
@@ -70,11 +102,13 @@ def copy_link():
         Response: Redirect to the referring page.
     """
     flash("Ссылка скопирована!", "success")
-    return redirect(request.form.get('return_url') or request.referrer or url_for('index'))
+    return redirect(
+        request.form.get("return_url") or request.referrer or url_for("index")
+    )
 
 
-@main_bp.route('/')
-@main_bp.route('/home')
+@main_bp.route("/")
+@main_bp.route("/home")
 def index():
     """
     Renders the homepage with recent blog posts and main products.
@@ -84,10 +118,10 @@ def index():
     """
     posts = Blog.query.order_by(Blog.date.desc()).limit(3).all()
     main_products = Products.query.filter_by(is_main=True).limit(3).all()
-    return render_template('index.html', posts=posts, main_products=main_products)
+    return render_template("index.html", posts=posts, main_products=main_products)
 
 
-@main_bp.route('/contacts')
+@main_bp.route("/contacts")
 def contacts():
     """
     Renders the contacts page.
@@ -112,8 +146,7 @@ def page_not_found(e):
     return render_template("404.html"), 404
 
 
-
-@main_bp.route('/about')
+@main_bp.route("/about")
 def about():
     """
     Renders the about page.
@@ -124,7 +157,7 @@ def about():
     return render_template("about.html")
 
 
-@main_bp.route('/thank_you')
+@main_bp.route("/thank_you")
 def thank_you():
     """
     Renders the thank-you page after form submission.
@@ -135,50 +168,7 @@ def thank_you():
     return render_template("thank_you.html")
 
 
-@main_bp.route('/apply', methods=['GET', 'POST'])
-def apply():
-    """
-    Handles the catalog request form.
-
-    On POST: Sends a notification email to the business address.
-    On GET: Renders the application form.
-
-    Returns:
-        Response or str: Redirect to thank-you page or rendered HTML of form.
-    """
-    if request.method == 'POST':
-        name = request.form.get('Name', '')
-        telephone = request.form.get('Telephone', '')
-        email = request.form.get('Email', '')
-        articles = request.form.get('Articles', '')
-
-        msg = Message(
-            subject="📥 Новая заявка с сайта",
-            sender=os.getenv('DEL_EMAIL'),
-            recipients=[os.getenv('REC_EMAIL')],
-            body=(
-                f"Имя: {name}\n"
-                f"Телефон: {telephone}\n"
-                f"Email: {email}\n"
-                f"Позиции из каталога: {articles}"
-            ),
-            html=f"""
-                <h2>Новая заявка от клиента</h2>
-                <ul>
-                  <li><strong>Имя:</strong> {name}</li>
-                  <li><strong>Телефон:</strong> {telephone}</li>
-                  <li><strong>Email:</strong> {email}</li>
-                  <li><strong>Позиции из каталога:</strong> {articles}</li>
-                </ul>
-            """
-        )
-        mail.send(msg)
-        return redirect(url_for("thank_you"))
-
-    return render_template("apply.html")
-
-
-@main_bp.route('/catalog')
+@main_bp.route("/catalog")
 def catalog():
     """
     Renders the product catalog with search, filtering and sorting.
@@ -195,21 +185,21 @@ def catalog():
     Returns:
         str: Rendered catalog page with filtered product list.
     """
-    query = request.args.get('q', '').strip()
-    sort = request.args.get('sort')
-    type_filter = request.args.get('type')
-    category_filter = request.args.get('category')
-    brand_filter = request.args.get('brand')
-    price_min = request.args.get('price_min')
-    price_max = request.args.get('price_max')
+    query = request.args.get("q", "").strip()
+    sort = request.args.get("sort")
+    type_filter = request.args.get("type")
+    category_filter = request.args.get("category")
+    brand_filter = request.args.get("brand")
+    price_min = request.args.get("price_min")
+    price_max = request.args.get("price_max")
     filters = Products.query
 
     # Search
     if query:
         filters = filters.filter(
             db.or_(
-                Products.name.ilike(f'%{query}%'),
-                Products.article.cast(db.String).ilike(f'%{query}%')
+                Products.name.ilike(f"%{query}%"),
+                Products.article.cast(db.String).ilike(f"%{query}%"),
             )
         )
 
@@ -226,13 +216,13 @@ def catalog():
         filters = filters.filter(Products.price <= int(price_max))
 
     # Sorting
-    if sort == 'name_asc':
+    if sort == "name_asc":
         filters = filters.order_by(Products.name.asc())
-    elif sort == 'name_desc':
+    elif sort == "name_desc":
         filters = filters.order_by(Products.name.desc())
-    elif sort == 'price_asc':
+    elif sort == "price_asc":
         filters = filters.order_by(Products.price.asc())
-    elif sort == 'price_desc':
+    elif sort == "price_desc":
         filters = filters.order_by(Products.price.desc())
     else:
         filters = filters.order_by(Products.name.asc())
@@ -242,12 +232,12 @@ def catalog():
 
     # Sort labels for UI
     sort_labels = {
-        'name_asc': 'Имя: А → Я',
-        'name_desc': 'Имя: Я → А',
-        'price_asc': 'Цена ↑',
-        'price_desc': 'Цена ↓',
+        "name_asc": "Имя: А → Я",
+        "name_desc": "Имя: Я → А",
+        "price_asc": "Цена ↑",
+        "price_desc": "Цена ↓",
     }
-    current_sort_label = sort_labels.get(sort, 'По умолчанию')
+    current_sort_label = sort_labels.get(sort, "По умолчанию")
 
     # Dropdown values (type/category/brand)
     type_query = db.session.query(Products.type).distinct()
@@ -263,13 +253,17 @@ def catalog():
 
     brand_query = db.session.query(Products.brand_id)
 
-    if type_filter not in (None, ''):
+    if type_filter not in (None, ""):
         brand_query = brand_query.filter(Products.type == type_filter)
 
     brand_ids = [row[0] for row in brand_query.distinct() if row[0] is not None]
 
     if brand_ids:
-        brands = CarBrand.query.filter(CarBrand.id.in_(brand_ids)).order_by(CarBrand.name).all()
+        brands = (
+            CarBrand.query.filter(CarBrand.id.in_(brand_ids))
+            .order_by(CarBrand.name)
+            .all()
+        )
     else:
         brands = []
 
@@ -284,11 +278,12 @@ def catalog():
         current_sort_label=current_sort_label,
         types=types,
         categories=categories,
-        brands=brands, user_cart_items=user_cart_items
+        brands=brands,
+        user_cart_items=user_cart_items,
     )
 
 
-@main_bp.route('/product_card/<int:product_id>')
+@main_bp.route("/product_card/<int:product_id>")
 def product_card(product_id):
     """
     Renders the product detail page.
@@ -304,7 +299,9 @@ def product_card(product_id):
         item.product_id: item
         for item in CartItem.query.filter_by(user_id=current_user.id).all()
     }
-    return render_template('product_card.html', product=product, user_cart_items=user_cart_items)
+    return render_template(
+        "product_card.html", product=product, user_cart_items=user_cart_items
+    )
 
 
 @main_bp.route("/blog")
@@ -334,7 +331,8 @@ def blog_card(blog_id):
     return render_template("blog_card.html", post=post)
 
 
-@main_bp.route('/admin-login', methods=['GET', 'POST'])
+@main_bp.route("/admin-login", methods=["GET", "POST"])
+@csrf.exempt
 def admin_login():
     """
     Renders the admin login page and validates the password on POST.
@@ -343,17 +341,17 @@ def admin_login():
         str or Response: Rendered login page or redirect to admin panel.
     """
     error = None
-    if request.method == 'POST':
-        entered_password = request.form['password']
-        if entered_password == os.getenv('ADMIN_PASSWORD'):
-            session['admin'] = True
-            return redirect('/admin')
+    if request.method == "POST":
+        entered_password = request.form["password"]
+        if entered_password == os.getenv("ADMIN_PASSWORD"):
+            session["admin"] = True
+            return redirect("/admin")
         else:
             error = "Incorrect password."
-    return render_template('admin_login.html', error=error)
+    return render_template("admin_login.html", error=error)
 
 
-@main_bp.route('/admin-logout')
+@main_bp.route("/admin-logout")
 def admin_logout():
     """
     Logs out the admin user by removing the session flag.
@@ -361,17 +359,18 @@ def admin_logout():
     Returns:
         Response: Redirect to login page.
     """
-    session.pop('admin', None)
-    return redirect(url_for('admin_login'))
+    session.pop("admin", None)
+    return redirect(url_for("admin_login"))
 
 
-cart_bp = Blueprint('cart', __name__, url_prefix='/cart')
+cart_bp = Blueprint("cart", __name__, url_prefix="/cart")
 
-@cart_bp.route('/add', methods=['POST'])
+
+@cart_bp.route("/add", methods=["POST"])
 @login_required
 def add_to_cart():
     data = request.get_json()
-    product_id = data.get('product_id')
+    product_id = data.get("product_id")
 
     if not product_id:
         return jsonify(success=False, message="Нет product_id"), 400
@@ -381,7 +380,9 @@ def add_to_cart():
         return jsonify(success=False, message="Товар не найден"), 404
 
     # Проверка, есть ли уже такой товар в корзине
-    item = CartItem.query.filter_by(user_id=current_user.id, product_id=product_id).first()
+    item = CartItem.query.filter_by(
+        user_id=current_user.id, product_id=product_id
+    ).first()
 
     if item:
         item.quantity += 1
@@ -395,17 +396,19 @@ def add_to_cart():
     return jsonify(success=True, quantity=item.quantity)
 
 
-@cart_bp.route('/update', methods=['POST'])
+@cart_bp.route("/update", methods=["POST"])
 @login_required
 def update_cart():
     data = request.get_json()
-    product_id = data.get('product_id')
-    quantity = data.get('quantity')
+    product_id = data.get("product_id")
+    quantity = data.get("quantity")
 
     if not product_id or quantity is None:
         return jsonify(success=False, message="Некорректные данные"), 400
 
-    item = CartItem.query.filter_by(user_id=current_user.id, product_id=product_id).first()
+    item = CartItem.query.filter_by(
+        user_id=current_user.id, product_id=product_id
+    ).first()
     if not item:
         return jsonify(success=False, message="Товар не найден в корзине"), 404
 
@@ -418,23 +421,25 @@ def update_cart():
     return jsonify(success=True, quantity=quantity)
 
 
-@cart_bp.route('/remove', methods=['POST'])
+@cart_bp.route("/remove", methods=["POST"])
 @login_required
 def remove_from_cart():
     if request.is_json:
         data = request.get_json()
-        product_id = data.get('product_id')
+        product_id = data.get("product_id")
     else:
-        product_id = request.form.get('product_id')
+        product_id = request.form.get("product_id")
 
     if not product_id:
         message = "Некорректный запрос"
         if request.is_json:
             return jsonify({"success": False, "message": message}), 400
         flash(message, "danger")
-        return redirect(url_for('prof.profile'))
+        return redirect(url_for("prof.profile"))
 
-    item = CartItem.query.filter_by(user_id=current_user.id, product_id=product_id).first()
+    item = CartItem.query.filter_by(
+        user_id=current_user.id, product_id=product_id
+    ).first()
     if item:
         db.session.delete(item)
         db.session.commit()
@@ -448,5 +453,84 @@ def remove_from_cart():
         return jsonify({"success": True, "message": message})
 
     flash(message, "success")
-    return redirect(url_for('prof.profile'))
+    return redirect(url_for("prof.profile"))
 
+
+@cart_bp.route("/checkout", methods=["POST"])
+@login_required
+def checkout():
+    """Оформление заказа из корзины"""
+    # 1️⃣ Проверяем, пуста ли корзина
+    cart_items = CartItem.query.filter_by(user_id=current_user.id).all()
+    if not cart_items:
+        flash("Ваша корзина пуста.", "warning")
+        return redirect(url_for("prof.profile"))
+
+    # 2️⃣ Проверяем заполненность профиля
+    missing = []
+    if not current_user.name:
+        missing.append("имя")
+    if not current_user.phone:
+        missing.append("телефон")
+    if not current_user.email:
+        missing.append("email")
+    if current_user.user_type == "юл" and not current_user.job_title:
+        missing.append("название компании")
+
+    if missing:
+        flash(f"Пожалуйста, заполните профиль: {', '.join(missing)}.", "danger")
+        return redirect(url_for("prof.profile_edit"))
+
+    # 3️⃣ Создаём заказ
+    order = Order(
+        order_number=generate_order_number(),
+        user_id=current_user.id,
+        full_name=current_user.name,
+        phone=current_user.phone,
+        email=current_user.email,
+        company_name=current_user.job_title,  # (если у тебя company_name в job_title)
+        status="new",
+        created_at=datetime.utcnow(),
+    )
+    db.session.add(order)
+    db.session.flush()  # чтобы получить order.id
+
+    total_sum = 0
+    for item in cart_items:
+        product = item.product
+        price = float(product.price)
+        total_sum += price * item.quantity
+
+        order_item = OrderItem(
+            order_id=order.id,
+            product_id=product.id,
+            product_name=product.name,
+            article=product.article,
+            quantity=item.quantity,
+            price=price,
+            sum=price * item.quantity,
+        )
+        db.session.add(order_item)
+
+    order.total_sum = total_sum
+
+    # 4️⃣ Очищаем корзину
+    CartItem.query.filter_by(user_id=current_user.id).delete()
+    db.session.commit()
+
+    # 5️⃣ Отправляем уведомление админу
+    try:
+        msg = Message(
+            subject=f"🛒 Новый заказ №{order.order_number}",
+            sender=os.getenv("DEL_EMAIL"),
+            recipients=[os.getenv("REC_EMAIL")],
+            body=render_template("email/new_order.txt", order=order),
+            html=render_template("email/new_order.html", order=order),
+        )
+        mail.send(msg)
+    except Exception as e:
+        print("Ошибка при отправке письма:", e)
+
+    # 6️⃣ Перенаправляем на страницу 'спасибо'
+    flash(f"Заказ №{order.order_number} успешно оформлен!", "success")
+    return render_template("thank_you.html", order=order)

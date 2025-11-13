@@ -10,11 +10,13 @@ with app.app_context():
 
 migrate = Migrate(app, db)
 
+
 @app.cli.command("db_init")
 @with_appcontext
 def db_init():
     """Инициализирует миграции"""
     run_init()
+
 
 @app.cli.command("db_migrate")
 @with_appcontext
@@ -22,15 +24,18 @@ def db_migrate():
     """Создаёт миграцию"""
     run_migrate(message="Auto migration")
 
+
 @app.cli.command("db_upgrade")
 @with_appcontext
 def db_upgrade():
     """Применяет миграции"""
     upgrade()
 
+
 @app.context_processor
 def inject_user():
     return dict(current_user=current_user)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     app.run(debug=True)

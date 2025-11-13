@@ -37,7 +37,7 @@
 											<li><a href="/contacts">Контакты</a></li>
 											<li class="mobile-only">
 												{% if current_user.is_authenticated %}
-													<a href="{{ url_for(prof.profile') }}" class="btn btn-mobile">Личный кабинет</a>
+													<a href="{{ url_for('prof.profile') }}" class="btn btn-mobile">Личный кабинет</a>
 												{% else %}
 													<a href="{{ url_for('auth.user_login') }}" class="btn btn-mobile">Авторизация</a>
 												{% endif %}

@@ -530,6 +530,9 @@
 						<!-- Start Newsletter Form -->
 						<div class="subscribe-form ">
 							<form action="{{ url_for('main.subscribe') }}" method="post" class="newsletter-inner">
+								<!-- 🔹 CSRF protection -->
+								<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+								<!-- 🔹 Возврат на ту же страницу после подписки -->
 								<input type="hidden" name="return_url" value="{{ request.path }}#footer">
 								<input name="email" type="email" placeholder="Ваш email" class="common-input" required>
 								<button class="btn">Подписаться</button>

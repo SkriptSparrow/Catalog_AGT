@@ -163,6 +163,7 @@
 								<p>Подпишитесь на нашу рассылку, чтобы получать наши новости на свой почтовый ящик.
 									Мы уведомляем о новинках, делаем полезные обзоры, краш-тесты, и другие интересные штуки.</p>
 								<form action="{{ url_for('main.subscribe') }}" method="post" class="newsletter-inner">
+									<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 									<input name="email" type="email" placeholder="Ваш email" class="common-input" required>
 									<button class="button"><i class="icofont icofont-paper-plane"></i></button>
 								</form>
